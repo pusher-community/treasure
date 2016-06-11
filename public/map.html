@@ -4,10 +4,17 @@
     <meta charset="utf-8">
     <title>treasure map</title>
     <style media="screen">
+      body {
+        margin:0
+      }
       #map {
-        width: 30em;
-        height: 30em;
+        width: 100vw;
+        height: 100vh;
         position: relative;
+        background-image: url('sea.png');
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-color: #03C3FA;
       }
       .boat {
         position: absolute;
@@ -53,8 +60,8 @@
               .map(function(k) {
                 return {
                   id: k,
-                  x: 100,
-                  y: 100,
+                  x: 10,
+                  y: 10,
                   flag: members.members[k].flag
                 }
               })
