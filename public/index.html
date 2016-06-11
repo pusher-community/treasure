@@ -2,21 +2,51 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <title>captain</title>
     <style media="screen">
       #flag {
         width: 3em;
         height: 3em;
+        transition: 1s transform, 5s opacity;
+        background-image: url(coolpirateship.png);
+        background-size: 2em;
+        background-repeat: no-repeat;
+        background-position: 50% 50%;
+        border-radius: 100%;
+        display: inline-block;
+        vertical-align: middle;
+        width: 30vmin;
+        height: 30vmin;
+        background-size: 20vmin;
+      }
+      body {
+        text-align: center;
+        /*background: #08f*/
+      }
+      input {
+        display: inline-block;
+        font-size: 1em;
+        height:4em;
+        width: 4em;
+        border:none;
+        background: #fff;
+        width: 30vmin;
+        height: 30vmin;
         border-radius: 100%;
       }
     </style>
   </head>
   <body>
     <input type="button" value="NORTH" onclick="sail('NORTH')">
-    <input type="button" value="SOUTH" onclick="sail('SOUTH')">
-    <input type="button" value="EAST" onclick="sail('EAST')">
+    <div>
     <input type="button" value="WEST" onclick="sail('WEST')">
     <div id="flag"></div>
+    <input type="button" value="EAST" onclick="sail('EAST')">
+  </div>
+
+  <input type="button" value="SOUTH" onclick="sail('SOUTH')">
 
     <script type="text/javascript" src="bower_components/pusher-websocket-iso/dist/web/pusher.js"></script>
     <script type="text/javascript" src="bower_components/reqwest/reqwest.min.js"></script>
@@ -38,8 +68,10 @@
           var channel = pusher.subscribe('presence-pirates')
 
           channel.bind('pusher:subscription_succeeded', function(members) {
-            flag.style.background = members.me.info.flag
             id = members.me.id
+            flag.style.backgroundColor = members.me.info.flag
+            document.body.style.backgroundColor = members.me.info.flag
+
           })
 
 
