@@ -7,12 +7,19 @@
       #map {
         width: 30em;
         height: 30em;
+        position: relative;
       }
       .boat {
-        width: 1em;
-        height: 1em;
+        position: absolute;
+        width: 3em;
+        height: 3em;
         background-color: red;
-        transition: 1s transform
+        transition: 1s transform, 5s opacity;
+        background-image: url(coolpirateship.png);
+        background-size: 2em;
+        background-repeat: no-repeat;
+        background-position: 50% 50%;
+        border-radius: 100%;
       }
     </style>
   </head>
@@ -89,17 +96,17 @@
 
               switch (d.direction) {
                 case 'NORTH':
-                  b.y -= 10;
+                  b.y -= 50 + (Math.random()*20);
                   break;
                 case 'SOUTH':
-                  b.y += 10;
+                  b.y += 50 + (Math.random()*20);
                   break;
 
                 case 'EAST':
-                  b.x += 10;
+                  b.x += 50 + (Math.random()*20);
                   break;
                 case 'WEST':
-                  b.x -= 10;
+                  b.x -= 50 + (Math.random()*20);
                   break;
               }
             } else {
@@ -134,14 +141,18 @@
 
       function remove(id){
         var b = document.getElementById('boat-' + id)
-        if(b) b.remove()
+
+        if(b) {
+          b.style.transform =  (b.style.transform || '' ) + ' scale(0.01) rotate(270deg)'
+          setTimeout(function(){b.remove()}, 2000)
+        }
       }
 
-
-
+      //
+      //
       // render([
       //   {x:100, y:100, flag: 'blue', id:'1'},
-      //   {x:100, y:150, flag: 'red', id:'2'}
+      //   {x:100, y:100, flag: 'red', id:'2'}
       // ])
       //
       // setTimeout(function(){
