@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>treasure map</title>
+    <style media="screen">
+      #map {
+        width: 30em;
+        height: 30em;
+      }
+      .boat {
+        width: 1em;
+        height: 1em;
+        background-color: red;
+        transition: 1s transform
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+
+    <script type="text/javascript" src="bower_components/pusher-websocket-iso/dist/web/pusher.js"></script>
+    <script type="text/javascript" src="bower_components/reqwest/reqwest.min.js"></script>
+    <script type="text/javascript">
+
+      var boats = []
+
+      reqwest('/config')
+        .then(function(config) {
+
+          var pusher = new Pusher(config.key, {
+            cluster: config.cluster,
+            encrypted: true
+          })
+
+          var channel = pusher.subscribe('presence-pirates')
+
+          channel.bind('pusher:subscription_succeeded', function(members) {
+
+            // flag.style.background = members.me.info.flag
+            console.log(members)
+            boats = Object.keys(members.members)
+              .filter(function(k) {
+                return k != members.myID
+              })
+              .map(function(k) {
+                return {
+                  id: k,
+                  x: 100,
+                  y: 100,
+                  flag: members.members[k].flag
+                }
+              })
+
+            render(boats)
+
+          })
+
+          channel.bind('pusher:member_added', function(member) {
+            // for example:
+            // add_member(member.id, member.info);
+            boats.push({
+              id: member.id,
+              x: 100,
+              y: 100,
+              flag: member.info.flag
+            })
+
+            render(boats)
+          })
+
+          channel.bind('pusher:member_removed', function(member) {
+            boats = boats.filter(function(b){
+              return b.id !== member.id
+            })
+
+            remove(member.id)
+          })
+
+          channel.bind('client-sail', function(d){
+            console.log("D", d.boat, d.direction)
+
+            var b = boats.filter(function(boat) {
+              return boat.id == d.boat
+            })[0]
+
+            if(b) {
+              console.log('b', b)
+
+              switch (d.direction) {
+                case 'NORTH':
+                  b.y -= 10;
+                  break;
+                case 'SOUTH':
+                  b.y += 10;
+                  break;
+
+                case 'EAST':
+                  b.x += 10;
+                  break;
+                case 'WEST':
+                  b.x -= 10;
+                  break;
+              }
+            } else {
+              console.log("couldn't find boat")
+            }
+
+
+            render(boats)
+          })
+
+        })
+
+
+
+      function render(boats) {
+        boats.forEach(function(boat){
+          // if()
+          var b = document.getElementById('boat-' + boat.id)
+
+          if(!b) {
+            b = document.createElement('div')
+            b.className = 'boat'
+            b.id = 'boat-' + boat.id
+            b.style.backgroundColor = boat.flag
+            map.appendChild(b)
+          }
+
+          b.style.transform = 'translate(' + boat.x + 'px, ' + boat.y + 'px)'
+
+        })
+      }
+
+      function remove(id){
+        var b = document.getElementById('boat-' + id)
+        if(b) b.remove()
+      }
+
+
+
+      // render([
+      //   {x:100, y:100, flag: 'blue', id:'1'},
+      //   {x:100, y:150, flag: 'red', id:'2'}
+      // ])
+      //
+      // setTimeout(function(){
+      //   render([
+      //     {x:50, y:100, flag: 'blue', id:'1'},
+      //     {x:200, y:200, flag: 'red', id:'2'}
+      //   ])
+      // }, 1500)
+    </script>
+  </body>
+</html>

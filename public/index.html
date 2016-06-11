@@ -22,6 +22,8 @@
     <script type="text/javascript" src="bower_components/reqwest/reqwest.min.js"></script>
     <script type="text/javascript">
       var sail = function(){console.log("not connected")}
+      var id = '_'
+
 
       reqwest('/config')
         .then(function(config) {
@@ -36,14 +38,13 @@
           var channel = pusher.subscribe('presence-pirates')
 
           channel.bind('pusher:subscription_succeeded', function(members) {
-
             flag.style.background = members.me.info.flag
-
+            id = members.me.id
           })
 
 
           sail = function(direction){
-            channel.trigger("client-sail", {direction: direction});
+            channel.trigger("client-sail", {direction: direction, boat: id})
           }
 
         })
