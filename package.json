@@ -1,0 +1,24 @@
+{
+  "name": "treasure",
+  "version": "1.0.0",
+  "description": "a treasure hunt level with pusher",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pusher-community/treasure.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pusher-community/treasure/issues"
+  },
+  "homepage": "https://github.com/pusher-community/treasure#readme",
+  "dependencies": {
+    "dotenv": "^2.0.0",
+    "express": "^4.13.4",
+    "pusher": "^1.3.0"
+  }
+}
