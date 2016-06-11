@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>captain</title>
+    <style media="screen">
+      #flag {
+        width: 3em;
+        height: 3em;
+        border-radius: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <input type="button" value="NORTH" onclick="sail('NORTH')">
+    <input type="button" value="SOUTH" onclick="sail('SOUTH')">
+    <input type="button" value="EAST" onclick="sail('EAST')">
+    <input type="button" value="WEST" onclick="sail('WEST')">
+    <div id="flag"></div>
+
+    <script type="text/javascript" src="bower_components/pusher-websocket-iso/dist/web/pusher.js"></script>
+    <script type="text/javascript" src="bower_components/reqwest/reqwest.min.js"></script>
+    <script type="text/javascript">
+      var sail = function(){console.log("not connected")}
+
+      reqwest('/config')
+        .then(function(config) {
+          console.log("config!", config)
+
+
+          var pusher = new Pusher(config.key, {
+            cluster: config.cluster,
+            encrypted: true
+          })
+
+          var channel = pusher.subscribe('presence-pirates')
+
+          channel.bind('pusher:subscription_succeeded', function(members) {
+
+            flag.style.background = members.me.info.flag
+
+          })
+
+
+          sail = function(direction){
+            channel.trigger("client-sail", {direction: direction});
+          }
+
+        })
+    </script>
+  </body>
+</html>
